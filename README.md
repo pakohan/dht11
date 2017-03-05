@@ -4,6 +4,7 @@ CGo client library for the DHT11/22 sensors on a Raspberry Pi 1 via GPIO Edit
 
 ```
 go get -d -u github.com/pakohan/dht
+go generate github.com/pakohan/dht
 ```
 
 The code is copied over from [adafruit](https://github.com/adafruit/Adafruit_Python_DHT).
