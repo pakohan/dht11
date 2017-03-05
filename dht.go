@@ -16,14 +16,16 @@ const (
 	SensorDHT22
 )
 
-func GetSensorData(stype int) (humidity, temperature float32, err error) {
+// GetSensorData calls ReadSensor for the given pin and returns the converted
+// humidty and temparature depending on the sensor model.
+func GetSensorData(stype, pin int) (humidity, temperature float32, err error) {
 	if stype != SensorDHT11 && stype != SensorDHT22 {
 		err = fmt.Errorf("sensor type must be either %d or %d", SensorDHT11, SensorDHT22)
 		return
 	}
 
 	var data [5]byte
-	data, err = ReadSensor()
+	data, err = ReadSensor(pin)
 	if err != nil {
 		return
 	}
@@ -41,8 +43,10 @@ func GetSensorData(stype int) (humidity, temperature float32, err error) {
 	return
 }
 
-func ReadSensor() (data [5]byte, err error) {
-	res := C.pi_dht_read(C.int(4), (*C.uint8_t)(&data[0]))
+// ReadSensor returns the raw bit sequence read from the GPIO pin attached to the
+// data pin of the DHT sensors.
+func ReadSensor(pin int) (data [5]byte, err error) {
+	res := C.pi_dht_read(C.int(pin), (*C.uint8_t)(&data[0]))
 	if res == C.DHT_ERROR_GPIO {
 		err = errors.New("could not open gpio device")
 		return
