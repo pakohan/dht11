@@ -24,7 +24,7 @@ device file can be moved to Go as well.
 
 ## usage
 
-`go get` will throw an error when it is retrieved via go get without the `-d` flag since it
+`go get` will throw an error when it is retrieved without the `-d` flag since it
 tries to build the library after downloading. This is not possible, because before we need
 some C compilation to do. Everything is done via `go generate` and `make`, so when you just
 want to use the library, running `go generate` will do the trick.
