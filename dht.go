@@ -2,9 +2,9 @@ package dht
 
 //go:generate make
 
-// #cgo CFLAGS: -I./Raspberry_Pi -I.
+// #cgo CFLAGS: -I./Raspberry_Pi_2 -I.
 // #cgo LDFLAGS: ${SRCDIR}/dht.a
-// #include "Raspberry_Pi/pi_dht_read.h"
+// #include "Raspberry_Pi_2/pi_2_dht_read.h"
 import "C"
 import (
 	"errors"
@@ -46,7 +46,7 @@ func GetSensorData(stype, pin int) (humidity, temperature float32, err error) {
 // ReadSensor returns the raw bit sequence read from the GPIO pin attached to the
 // data pin of the DHT sensors.
 func ReadSensor(pin int) (data [5]byte, err error) {
-	res := C.pi_dht_read(C.int(pin), (*C.uint8_t)(&data[0]))
+	res := C.pi_2_dht_read(C.int(pin), (*C.uint8_t)(&data[0]))
 	if res == C.DHT_ERROR_GPIO {
 		err = errors.New("could not open gpio device")
 		return
