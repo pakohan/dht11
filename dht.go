@@ -8,14 +8,39 @@ package dht
 // #include "Raspberry_Pi_2/pi_2_dht_read.h"
 import "C"
 import (
+	"bytes"
 	"errors"
 	"fmt"
+	"io/ioutil"
 )
 
 const (
 	SensorDHT11 = iota
 	SensorDHT22
+	ModelUnknown = 0
+	ModelRPi     = iota
+	ModelRPi2
+	ModelFile = "/sys/firmware/devicetree/base/model"
 )
+
+// GetPlatformModel detects the Raspberry Pi model
+// https://www.raspberrypi.org/forums/viewtopic.php?f=31&t=120385
+func GetPlatformModel() int {
+	model, err := ioutil.ReadFile(ModelFile)
+	if err != nil {
+		return ModelUnknown
+	}
+	switch {
+	case bytes.HasPrefix(model, []byte("Raspberry Pi 3")):
+		return ModelRPi2
+	case bytes.HasPrefix(model, []byte("Raspberry Pi 2")):
+		return ModelRPi2
+	case bytes.HasPrefix(model, []byte("Raspberry Pi")):
+		return ModelRPi
+	default:
+		return ModelUnknown
+	}
+}
 
 // GetSensorData calls ReadSensor for the given pin and returns the converted
 // humidty and temparature depending on the sensor model.
